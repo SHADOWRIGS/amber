@@ -198,8 +198,8 @@ func (pe *PE) ScrapePeHeaders() ([]byte, error) {
 	}
 
 	// Scrape the DOS stub message...
-	if bytes.Contains(rawFile, []byte(PE_DOS_STUB)) {
-		return nil, ErrInvalidPeHeaders
+	if !bytes.Contains(rawFile, []byte(PE_DOS_STUB)) {
+		return rawFile, nil
 	}
 
 	return bytes.Replace(rawFile, []byte(PE_DOS_STUB), make([]byte, len(PE_DOS_STUB)), 1), nil

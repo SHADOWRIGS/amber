@@ -35,6 +35,8 @@ func main() {
 		utils.PrintFatal(err)
 	}
 	pe.SyscallLoader = cfg.UseSyscalls
+	pe.IatResolver = cfg.UseIAT
+	pe.ScrapeHeaders = cfg.ScrapePeHeaders
 
 	if !pe.HasRelocData {
 		utils.PrintErr("%s has no relocation data. Exiting...\n", pe.Name)
@@ -65,9 +67,12 @@ func main() {
 	if err != nil {
 		utils.PrintFatal(err)
 	}
-
-	outFile.Write(payload)
 	defer outFile.Close()
+
+	_, err = outFile.Write(payload)
+	if err != nil {
+		utils.PrintFatal(err)
+	}
 
 	finSize, err := utils.GetFileSize(cfg.OutputFile)
 	if err != nil {
